@@ -2,11 +2,7 @@ Este proyecto consiste en que los usuarios de CCVO puedan entrar al GLPI a trave
 
 Esta APP se trata de tener el maximo funcionalidades de GLPI , para facilitar a los usuarios que puedan trabajar via APP 
 
-
-
-
-
-Esta APP esta copiada de una APP la plantilla
+Esta APP esta copiada de una plantilla
 
 Para seguir algunas guias, recopilo información en los siguiente URL:
 
