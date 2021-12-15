@@ -21,10 +21,3 @@ Para seguir algunas guias, recopilo información en los siguiente URL:
 - [Drawer Navigator Tutorial](https://youtu.be/2Tj9y8lfiyo)
 - [Stack Navigator Tutorial](https://youtu.be/a9jSyZXYGn8)
 
-
-# Project Demo
-![React Navigation v5 Mix App iPhone Demo](https://raw.githubusercontent.com/itzpradip/react-navigation-v5-mix/master/app-interaction-demo-iphone.gif)
-### iPhone Demo
-
-![React Navigation v5 Mix App Android Demo](https://raw.githubusercontent.com/itzpradip/react-navigation-v5-mix/master/app-interaction-demo-android.gif)
-### Android Demo
