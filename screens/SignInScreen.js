@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState } from 'react';
 import { 
     View, 
     Text, 
@@ -7,15 +7,24 @@ import {
     Platform,
     StyleSheet ,
     StatusBar,
-    Alert
+    Alert,
+    AsyncStorage
 } from 'react-native';
+
+import { connect } from 'react-redux';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Feather from 'react-native-vector-icons/Feather';
+import base64 from 'react-native-base64'
+
+import { API_URL } from '../src/config/const';
+import { setSessionToken, setUserObject } from '../src/actions/user';
+
+import HomeScreen from './HomeScreen';
+
 
 import { useTheme } from 'react-native-paper';
-
 import { AuthContext } from '../components/context';
 
 import Users from '../model/users';
@@ -29,11 +38,13 @@ const SignInScreen = ({navigation}) => {
         secureTextEntry: true,
         isValidUser: true,
         isValidPassword: true,
+        bootstrapping: true,
+        carregando: false,
+        
     });
 
-    const { colors } = useTheme();
-
     const { signIn } = React.useContext(AuthContext);
+    const { colors } = useTheme();
 
     const textInputChange = (val) => {
         if( val.trim().length >= 4 ) {
@@ -90,33 +101,102 @@ const SignInScreen = ({navigation}) => {
         }
     }
 
-    const loginHandle = (userName, password) => {
 
-        const foundUser = Users.filter( item => {
-            return userName == item.username && password == item.password;
-        } );
+    const [Textencode, setEncodeText] = useState("Encode");
+    const [Textdecode, setDecodeText] = useState("Decode");
 
-        if ( data.username.length == 0 || data.password.length == 0 ) {
-            Alert.alert('Wrong Input!', 'Username or password field cannot be empty.', [
-                {text: 'Okay'}
+
+    const onPressEncode = (userName, password) => {
+        const UserPWD = userName + ':' + password;
+        const cifrado = base64.encode(UserPWD);
+        setEncodeText(cifrado);
+
+        const descifrado = base64.decode(cifrado);
+        setDecodeText(descifrado);
+    };
+
+    const authenticateUser = (userName, password) => {
+
+        /* if ( data.username.length == 0 || data.password.length == 0 ) {
+            Alert.alert('Entrada incorrecta!', 'El campo de nombre de usuario o contraseña no puede estar vacío.', [
+                {text: 'Ok'}
             ]);
             return;
-        }
+        } */
+        // Transform Usuario&PWD => Base64
+        const UserPWD = userName + ':' + password;
+        const credentials = base64.encode(UserPWD);
+        console.log("Encode:", credentials)
+        setEncodeText(credentials);
+        const descifrado = base64.decode(credentials);
+        console.log("Decode:", descifrado)
+        //setDecodeText(descifrado);
 
-        if ( foundUser.length == 0 ) {
-            Alert.alert('Invalid User!', 'Username or password is incorrect.', [
-                {text: 'Okay'}
-            ]);
-            return;
-        }
-        signIn(foundUser);
-    }
-
-    return (
-      <View style={styles.container}>
+    
+        fetch(API_URL+'/initSession', {
+            method: 'GET',
+            headers: {
+                'Accept' : 'application/json',
+                'Content-Type' : 'application/json',
+                'Authorization' :  'Basic ' + credentials
+            },
+            cors: true
+                
+              }).then((response) => response.json())
+                .then (async data => {
+                    console.log("Datos", data)
+                    if ( typeof data === 'object' && typeof data.session_token === 'string'){
+                        try{
+                            let {session_token} = data;                       
+                            let objHeader = {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json',
+                                'session_token': session_token,
+                              };
+                              let result = await fetch(API_URL + '/getFullSession/?session_token=' + session_token, {
+                                headers: objHeader
+                              });                         
+                              let profileData = await result.json();
+                              let resultProfile = await fetch(API_URL + '/User/'+profileData.session.glpiID+'?session_token=' + session_token, {
+                                headers: objHeader
+                              });
+                              let resultProfileCvt = await resultProfile.json();
+                              
+                            const foundUser = {userName, session_token, profileData , resultProfile  , resultProfileCvt  }    
+                        signIn(foundUser); 
+                      
+                    } catch (error) {
+            
+                      console.log("Error Entrada22")
+                      Alert.alert('Error Conexión!', 'Error al cargar el perfil.', [
+                          {text: 'Ok'}
+                      ]);
+                      throw (error);
+                      
+                    } 
+                  }else{
+                      Alert.alert('Entrada Incorrecta!', 'El campo de nombre de usuario o contraseña no puede estar vacío.', [
+                          {text: 'Ok'}
+                      ]);
+                  }
+                })
+                .catch( error => {
+                    console.log("entra aqui?")
+                    console.log(error);
+                   
+                    
+                }).then( () => { 
+                     setData({carregando: false})
+                }); 
+              
+        
+    }      
+       
+       return (
+      <View style={styles.container} >
           <StatusBar backgroundColor='#009387' barStyle="light-content"/>
         <View style={styles.header}>
-            <Text style={styles.text_header}>Welcome!</Text>
+            <Text style={styles.text_header}>Bienvenido!</Text>
         </View>
         <Animatable.View 
             animation="fadeInUpBig"
@@ -126,7 +206,7 @@ const SignInScreen = ({navigation}) => {
         >
             <Text style={[styles.text_footer, {
                 color: colors.text
-            }]}>Username</Text>
+            }]}>Usuario</Text>
             <View style={styles.action}>
                 <FontAwesome 
                     name="user-o"
@@ -134,7 +214,7 @@ const SignInScreen = ({navigation}) => {
                     size={20}
                 />
                 <TextInput 
-                    placeholder="Your Username"
+                    placeholder="Nombre de Usuario"
                     placeholderTextColor="#666666"
                     style={[styles.textInput, {
                         color: colors.text
@@ -157,7 +237,7 @@ const SignInScreen = ({navigation}) => {
             </View>
             { data.isValidUser ? null : 
             <Animatable.View animation="fadeInLeft" duration={500}>
-            <Text style={styles.errorMsg}>Username must be 4 characters long.</Text>
+            <Text style={styles.errorMsg}>El nombre de usuario es Incorrecto.</Text>
             </Animatable.View>
             }
             
@@ -165,7 +245,7 @@ const SignInScreen = ({navigation}) => {
             <Text style={[styles.text_footer, {
                 color: colors.text,
                 marginTop: 35
-            }]}>Password</Text>
+            }]}>Contraseña</Text>
             <View style={styles.action}>
                 <Feather 
                     name="lock"
@@ -173,7 +253,7 @@ const SignInScreen = ({navigation}) => {
                     size={20}
                 />
                 <TextInput 
-                    placeholder="Your Password"
+                    placeholder="Contraseña"
                     placeholderTextColor="#666666"
                     secureTextEntry={data.secureTextEntry ? true : false}
                     style={[styles.textInput, {
@@ -202,18 +282,17 @@ const SignInScreen = ({navigation}) => {
             </View>
             { data.isValidPassword ? null : 
             <Animatable.View animation="fadeInLeft" duration={500}>
-            <Text style={styles.errorMsg}>Password must be 8 characters long.</Text>
+            <Text style={styles.errorMsg}>Contraseña Incorrecta</Text>
             </Animatable.View>
             }
-            
 
-            <TouchableOpacity>
-                <Text style={{color: '#009387', marginTop:15}}>Forgot password?</Text>
-            </TouchableOpacity>
             <View style={styles.button}>
                 <TouchableOpacity
                     style={styles.signIn}
-                    onPress={() => {loginHandle( data.username, data.password )}}
+                    //onPress={() => {loginHandle( data.username, data.password )}}
+                    onPress={() => {authenticateUser(data.username, data.password )}}
+                    
+
                 >
                 <LinearGradient
                     colors={['#08d4c4', '#01ab9d']}
@@ -221,27 +300,30 @@ const SignInScreen = ({navigation}) => {
                 >
                     <Text style={[styles.textSign, {
                         color:'#fff'
-                    }]}>Sign In</Text>
+                    }]}>Iniciar Sesión</Text>
                 </LinearGradient>
                 </TouchableOpacity>
 
-                <TouchableOpacity
-                    onPress={() => navigation.navigate('SignUpScreen')}
-                    style={[styles.signIn, {
-                        borderColor: '#009387',
-                        borderWidth: 1,
-                        marginTop: 15
-                    }]}
-                >
-                    <Text style={[styles.textSign, {
-                        color: '#009387'
-                    }]}>Sign Up</Text>
-                </TouchableOpacity>
+              
             </View>
         </Animatable.View>
       </View>
     );
 };
+
+
+ /** listen state */
+/*  const mapStateToProps = (state) => ({
+    userConfig: state.user
+  })
+   */
+  /** dispatch actions */
+/*   const mapDispatchToProps = dispatch => ({
+    setToken: (token) => dispatch(setSessionToken(token)),
+    setUser: (user) => dispatch(setUserObject(user))
+  });
+   */
+
 
 export default SignInScreen;
 
@@ -313,3 +395,248 @@ const styles = StyleSheet.create({
         fontWeight: 'bold'
     }
   });
+
+
+
+
+  
+    /* const onPressDecode = (userName, password) => {
+        const UserPWD = userName + ':' + password;
+        const descifrado = base64.decode(UserPWD);
+        setDecodeText(descifrado);
+    } */
+
+    /* const signinAPI = async()=>{
+        if(userName!="" && password!=""){
+            await fetch(API_URL,{
+                method: 'GET',
+                headers:{
+                    'Accept': 'application/json',
+                    'Content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                'user': username,
+                'password': password
+            })
+        }).then(res => res.json())
+        .then(resData => {
+            setMessage(resData.message);
+        })
+        
+        }
+    }  */
+
+    //======================================================================================//
+
+     /* 
+     const foundUser = Users.filter( item => {
+           
+        return userName == item.username && password == item.password;
+            
+        } );
+
+        if ( data.username.length == 0 || data.password.length == 0 ) {
+            Alert.alert('Entrada incorrecta!', 'El campo de nombre de usuario o contraseña no puede estar vacío.', [
+                {text: 'Ok'}
+            ]);
+            return;
+        }
+
+        if ( foundUser.length == 0 ) {
+            Alert.alert('Usuario invalido!', 'Nombre de usuario o contraseña incorrecta.', [
+                {text: 'Ok'}
+            ]);
+            return;
+        }
+
+        signIn(foundUser);
+    
+    */
+    //======================================================================================//
+
+
+
+    
+/* 
+    const  GetFullProfile = async token => {
+      
+        let result = await fetch(API_URL + '/getFullSession/', {
+            
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            "Session-Token": token,
+          }
+        });
+      
+        let resultCvt = await result.json();
+        
+        console.log(resultCvt);
+  
+        return resultCvt;
+      }
+   */
+
+
+      
+   /*  const loginHandle = (userName, password) => {
+
+            console.log("Texto de prueba")
+
+        const foundUser = Users.filter( item => {
+           
+        return userName == item.username && password == item.password;
+            
+        } );
+
+            if ( data.username.length == 0 || data.password.length == 0 ) {
+                Alert.alert('Entrada incorrecta!', 'El campo de nombre de usuario o contraseña no puede estar vacío.', [
+                    {text: 'Ok'}
+                ]);
+                return;
+            }
+
+            if ( foundUser.length == 0 ) {
+                Alert.alert('Usuario invalido!', 'Nombre de usuario o contraseña incorrecta.', [
+                    {text: 'Ok'}
+                ]);
+                return;
+            }
+
+        signIn(foundUser);
+    } */
+
+
+            //Componente
+                /* <TouchableOpacity
+                    onPress={() => navigation.navigate('SignUpScreen')}
+                    style={[styles.signIn, {
+                        borderColor: '#009387',
+                        borderWidth: 1,
+                        marginTop: 15
+                    }]}
+                >
+                    <Text style={[styles.textSign, {
+                        color: '#009387'
+                    }]}>Sign Up</Text>
+                </TouchableOpacity> */
+
+
+
+
+
+                /* 
+                
+                
+        const authenticateUser = (userName, password) => {
+
+
+        if ( data.username.length == 0 || data.password.length == 0 ) {
+            Alert.alert('Entrada incorrecta!', 'El campo de nombre de usuario o contraseña no puede estar vacío.', [
+                {text: 'Ok'}
+            ]);
+            return;
+        }
+
+        console.log("Data", data)
+
+        //console.log("Encode & Decode")
+        const UserPWD = userName + ':' + password;
+        //console.log("UserPWd:", sUserPWD)
+        const credentials = base64.encode(UserPWD);
+        console.log("Encode:", credentials)
+        setEncodeText(credentials);
+        const descifrado = base64.decode(credentials);
+        console.log("Decode:", descifrado)
+        //setDecodeText(descifrado);
+
+        var myHeaders = new Headers();
+
+        myHeaders.append("Accept", "application/json");
+        myHeaders.append("Content-Type", "application/json");
+        myHeaders.append("Authorization", 'Basic ' + credentials);
+
+        //console.log (" Api_url", API_URL+'/initSession')
+
+        return fetch(API_URL+'/initSession', {
+            method: 'GET',
+            headers: myHeaders,
+            cors: true
+          })
+            .then(rawData => rawData.json())
+            .then( async data => {
+            console.log("data2", data)
+            signIn(data)
+
+            if ( typeof data === 'object' && typeof data.session_token === 'string'){
+              try {
+                let {session_token} = data;
+                console.log("token", session_token)
+                signIn(data);
+
+             
+               /*  let objHeader = {
+                  'Accept': 'application/json',
+                  'Content-Type': 'application/json',
+                  'session_token': session_token,
+                };
+    
+                let result = await fetch(API_URL + '/getFullSession/?session_token=' + session_token, {
+                  headers: objHeader
+                });
+                
+                let profileData = await result.json();
+
+                console.log("prefileData", profileData)
+    
+                let resultProfile = await fetch(API_URL + '/User/'+profileData.session.glpiID+'?session_token=' + session_token, {
+                  headers: objHeader
+                });
+
+                console.log("resultProfile", resultProfile)
+                let resultProfileCvt = await resultProfile.json();
+                console.log("resultProfileCvt", resultProfileCvt)
+                console.log("Mi nombre", resultProfileCvt.firstname)               
+                console.log("!!", !!profileData) 
+
+            
+
+                if(!!profileData){
+                    
+                    console.log("Entra aqui?")
+                    
+                  setUser({                      
+                    userGLPI: profileData.session,
+                    userProfile: resultProfileCvt
+                  });
+
+                  console.log("setuser", userGLPI)
+                  
+                    // Se ocorrer com sucesso
+                    // startTabs();
+                }else throw new Error(error);
+                  
+              } catch (error) {
+      
+                console.log("Error Entrada22")
+                Alert.alert('Error Conexión!', 'Error al cargar el perfil.', [
+                    {text: 'Ok'}
+                ]);
+                throw (error);
+                
+              } 
+            }else{
+                Alert.alert('Entrada Incorrecta!', 'El campo de nombre de usuario o contraseña no puede estar vacío.', [
+                    {text: 'Ok'}
+                ]);
+            }
+          })
+          .catch( err => {
+            console.log("errrror")
+          }).then( () => { 
+               setData({carregando: false})
+          }); 
+        }
+    } */ 
+

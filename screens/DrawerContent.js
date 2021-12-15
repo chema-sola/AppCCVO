@@ -1,4 +1,4 @@
-import React from 'react';
+import React , {useState} from 'react';
 import { View, StyleSheet } from 'react-native';
 import {
     useTheme,
@@ -20,11 +20,20 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import{ AuthContext } from '../components/context';
 
-export function DrawerContent(props) {
+export function DrawerContent(props, foundUser) {
 
     const paperTheme = useTheme();
+    
+    const PerfilUser = {...props}
+    
+    console.log("PerfilUser", PerfilUser)
 
     const { signOut, toggleTheme } = React.useContext(AuthContext);
+
+    //console.log("DrawerContent", props)
+    //console.log("foundUser", foundUser)
+    console.log("thisDrawerContent", this )
+
 
     return(
         <View style={{flex:1}}>
@@ -39,20 +48,17 @@ export function DrawerContent(props) {
                                 size={50}
                             />
                             <View style={{marginLeft:15, flexDirection:'column'}}>
-                                <Title style={styles.title}>John Doe</Title>
-                                <Caption style={styles.caption}>@j_doe</Caption>
+                                <Title style={styles.title}>{}</Title>
+                                <Caption style={styles.caption}>Josep Maria Sola</Caption>
                             </View>
                         </View>
 
                         <View style={styles.row}>
                             <View style={styles.section}>
-                                <Paragraph style={[styles.paragraph, styles.caption]}>80</Paragraph>
-                                <Caption style={styles.caption}>Following</Caption>
+                                    {/*<Paragraph style={[styles.paragraph, styles.caption]}>80</Paragraph>   */}
+                                    <Caption style={styles.caption}>solamj@vallesoriental.cat</Caption>
                             </View>
-                            <View style={styles.section}>
-                                <Paragraph style={[styles.paragraph, styles.caption]}>100</Paragraph>
-                                <Caption style={styles.caption}>Followers</Caption>
-                            </View>
+                            
                         </View>
                     </View>
 
@@ -65,7 +71,7 @@ export function DrawerContent(props) {
                                 size={size}
                                 />
                             )}
-                            label="Home"
+                            label="Principal"
                             onPress={() => {props.navigation.navigate('Home')}}
                         />
                         <DrawerItem 
@@ -76,18 +82,18 @@ export function DrawerContent(props) {
                                 size={size}
                                 />
                             )}
-                            label="Profile"
+                            label="Perfil"
                             onPress={() => {props.navigation.navigate('Profile')}}
                         />
                         <DrawerItem 
                             icon={({color, size}) => (
                                 <Icon 
-                                name="bookmark-outline" 
+                                name="view-list" 
                                 color={color}
                                 size={size}
                                 />
                             )}
-                            label="Bookmarks"
+                            label="Lista"
                             onPress={() => {props.navigation.navigate('BookmarkScreen')}}
                         />
                         <DrawerItem 
@@ -98,10 +104,10 @@ export function DrawerContent(props) {
                                 size={size}
                                 />
                             )}
-                            label="Settings"
+                            label="Configuración"
                             onPress={() => {props.navigation.navigate('SettingsScreen')}}
                         />
-                        <DrawerItem 
+                      {/*   <DrawerItem 
                             icon={({color, size}) => (
                                 <Icon 
                                 name="account-check-outline" 
@@ -109,14 +115,14 @@ export function DrawerContent(props) {
                                 size={size}
                                 />
                             )}
-                            label="Support"
+                            label="Soporte"
                             onPress={() => {props.navigation.navigate('SupportScreen')}}
-                        />
+                        /> */}
                     </Drawer.Section>
                     <Drawer.Section title="Preferences">
                         <TouchableRipple onPress={() => {toggleTheme()}}>
                             <View style={styles.preference}>
-                                <Text>Dark Theme</Text>
+                                <Text>Tema Oscuro</Text>
                                 <View pointerEvents="none">
                                     <Switch value={paperTheme.dark}/>
                                 </View>
@@ -134,7 +140,7 @@ export function DrawerContent(props) {
                         size={size}
                         />
                     )}
-                    label="Sign Out"
+                    label="Cerrar Sesión"
                     onPress={() => {signOut()}}
                 />
             </Drawer.Section>

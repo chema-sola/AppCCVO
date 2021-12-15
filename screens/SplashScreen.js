@@ -36,15 +36,15 @@ const SplashScreen = ({navigation}) => {
         >
             <Text style={[styles.title, {
                 color: colors.text
-            }]}>Stay connected with everyone!</Text>
-            <Text style={styles.text}>Sign in with account</Text>
+            }]}>Bienvenido al GLPI de CCVO</Text>
+            <Text style={styles.text}>Iniciar sesión con cuenta de GLPI</Text>
             <View style={styles.button}>
             <TouchableOpacity onPress={()=>navigation.navigate('SignInScreen')}>
                 <LinearGradient
                     colors={['#08d4c4', '#01ab9d']}
                     style={styles.signIn}
                 >
-                    <Text style={styles.textSign}>Get Started</Text>
+                    <Text style={styles.textSign}>Empezar</Text>
                     <MaterialIcons 
                         name="navigate-next"
                         color="#fff"

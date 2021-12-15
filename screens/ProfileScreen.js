@@ -4,10 +4,10 @@ import { View, Text, Button, StyleSheet } from 'react-native';
 const ProfileScreen = () => {
     return (
       <View style={styles.container}>
-        <Text>Profile Screen</Text>
+        <Text>Pantall de Perfil</Text>
         <Button
-          title="Click Here"
-          onPress={() => alert('Button Clicked!')}
+          title="Click Aqui"
+          onPress={() => alert('Perfil')}
         />
       </View>
     );
