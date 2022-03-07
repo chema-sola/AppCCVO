@@ -1,19 +1,13 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow
- */
-
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import { 
   NavigationContainer, 
   DefaultTheme as NavigationDefaultTheme,
   DarkTheme as NavigationDarkTheme
 } from '@react-navigation/native';
+
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createStackNavigator } from '@react-navigation/stack';
 
 import { 
   Provider as PaperProvider, 
@@ -21,46 +15,33 @@ import {
   DarkTheme as PaperDarkTheme 
 } from 'react-native-paper';
 
-//import { Provider } from 'react-redux'
-//import store from './src/store/index'
-
-
-import { DrawerContent } from './screens/DrawerContent';
-
-import MainTabScreen from './screens/MainTabScreen';
-import SupportScreen from './screens/SupportScreen';
-import SettingsScreen from './screens/SettingsScreen';
-import BookmarkScreen from './screens/BookmarkScreen';
+import { Provider } from 'react-redux'
+//import store from './src/store/store'
 
 import { AuthContext } from './components/context';
-
-import RootStackScreen from './screens/RootStackScreen';
+import RootStackScreen from './src/login/RootStackScreen';
 
 import AsyncStorage from '@react-native-community/async-storage';
+import Storage from 'react-native-storage';
+import { useDispatch } from 'react-redux';
 
+import {getConexion} from './src/actions/Actions';
+import MyDrawer from './src/tabs/MyDrawer';
+
+const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
 const App = () => {
-
- 
-   const [isLoading, setIsLoading] = React.useState(true);
-   const [userToken, setUserToken] = React.useState(null);
-   const [userData, setuserData] = React.useState(null);
-   const [Object, setObject] = React.useState(null);
-
-    //const changeData = (foundUser) => setuserData(this.state.foundUser)
-
-    console.log("userdata", userData)
-
-   
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [userToken, setUserToken] = React.useState(null);
   const [isDarkTheme, setIsDarkTheme] = React.useState(false);
-
+  const [propsData, setpropsData] = React.useState(null);
 
   const initialLoginState = {
     isLoading: true,
     userName: null,
     userToken: null,
-    propsData: null
+    propsData: propsData,
   };
 
   const CustomDefaultTheme = {
@@ -119,72 +100,83 @@ const App = () => {
     }
   };
 
-
-  
-  
-
   const [loginState, dispatch] = React.useReducer(loginReducer, initialLoginState);
-
   const authContext = React.useMemo(() => ({
-    signIn: async(foundUser) => {
-      console.log("Entrada Sigin (foundUser)", foundUser)
-       setUserToken(foundUser.session_token);
-       setuserData({userData: foundUser})
-
-       setIsLoading(false);
-
-       //changeData(foundUser)
-
-  
-
-      const userToken = String(foundUser.session_token);
-      const userName = foundUser.userName;
-      //const userToken = String(foundUser.session_token[0].userToken);
-      //const userName = foundUser.userName[0].username; 
-      
-      try {
-        await AsyncStorage.setItem('userToken', userToken);
-      } catch(e) {
-        console.log(e);
-      }
-     // console.log('user token: ', userToken);
-
+    signIn: async(DataUser) => { 
+      initialLoginState.propsData = DataUser
+      const userToken = String(DataUser.session_token);
+      setUserToken(userToken);
+      setpropsData(DataUser);
+      setIsLoading(true);
+      DataStorage();
+      const userName = DataUser.userName;
       dispatch({ type: 'LOGIN', id: userName, token: userToken });
     },
     signOut: async() => {
        setUserToken(null);
        setIsLoading(false);
       try {
-        await AsyncStorage.removeItem('userToken');
+        //await AsyncStorage.removeItem('userToken');
+        deleteStorage();
       } catch(e) {
         console.log(e);
       }
       dispatch({ type: 'LOGOUT' });
-    },
-
-    /* signUp: () => {
-       setUserToken('fgkj');
-       setIsLoading(false);
-    }, */
-
-    toggleTheme: () => {
+    },  
+    toggleTheme: async() => {
       setIsDarkTheme( isDarkTheme => !isDarkTheme );
+      try{
+        await AsyncStorage.setItem('isDarkTheme', JSON.stringify(!isDarkTheme));
+      }catch(e) {
+        console.log(e)
+      } 
+    },    
+    Data: {propsData} 
+  }), [isDarkTheme]);
+  
+  const DataStorage = async() => {
+    try{
+      AsyncStorage.getItem('isDarkTheme', (err, value) => {
+        if (err) {
+            console.log(err)
+        } else {
+          let StorageTheme=  JSON.parse(value) // boolean false
+          setIsDarkTheme(StorageTheme);
+        }
+    })
+    }catch(e) {
+      console.log(e)
     }
-  }), []);
-
+  }
+  
+  //Usamos Esta Función si deseamos eliminar AsyncStortage, (No esta activado)
+  const deleteStorage = async() => {
+    try{
+      await AsyncStorage.removeItem('credentials');
+      await AsyncStorage.removeItem('userToken');
+      await AsyncStorage.removeItem('DataUser');
+      await AsyncStorage.removeItem('userName');
+      await AsyncStorage.removeItem('isDarkTheme');
+    }catch(e) {
+      console.log(e)
+    }
+  }
+  
   useEffect(() => {
-    setTimeout(async() => {
-      setIsLoading(false);
-      let userToken;
-      console.log("userToken", userToken)
-      userToken = null;
-      try {
-        userToken = await AsyncStorage.getItem('userToken');
-      } catch(e) {
-        console.log(e);
+     setTimeout(async() => {
+      credentials = await AsyncStorage.getItem('credentials');
+      if( credentials !==  null) {
+        try{
+          getConexion(credentials)
+            .then(response => {
+            const DataUser = response
+            authContext.signIn(DataUser)
+          }).catch(error => console.warn(error));
+        }catch(e) {
+          console.log(e);
+        }
       }
-     //  console.log('user token: ', userToken);
-
+      //setIsLoading(false);
       dispatch({ type: 'RETRIEVE_TOKEN', token: userToken });
     }, 1000);
   }, []);
@@ -196,28 +188,24 @@ const App = () => {
       </View>
     );
   }
+  
   return (
-  //  <Provider store={store}>
+  //<Provider store={store}>
     <PaperProvider theme={theme}>
-    <AuthContext.Provider value={authContext}>
-    <NavigationContainer theme={theme}>
-      { loginState.userToken !== null ? (
-        <Drawer.Navigator drawerContent={props => <DrawerContent {...props} />}>
-          <Drawer.Screen name="HomeDrawer" component={MainTabScreen }  />
-          <Drawer.Screen name="SupportScreen" component={SupportScreen} />
-          <Drawer.Screen name="SettingsScreen" component={SettingsScreen} />
-          <Drawer.Screen name="BookmarkScreen" component={BookmarkScreen} />
-        </Drawer.Navigator>
-      )
-    :
-      <RootStackScreen/>
-    }
-    </NavigationContainer>
-    </AuthContext.Provider>
+      <AuthContext.Provider value={authContext} >      
+        <NavigationContainer theme={theme}>
+          { loginState.userToken !== null ? (
+            <MyDrawer Data={propsData} />
+          )
+          :
+            <RootStackScreen />
+          }
+        </NavigationContainer>
+      </AuthContext.Provider>
     </PaperProvider>
-  //  </Provider>
-
+  //</Provider>
   );
 }
 
 export default App;
+

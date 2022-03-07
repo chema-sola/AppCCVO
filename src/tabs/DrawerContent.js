@@ -11,58 +11,48 @@ import {
     TouchableRipple,
     Switch
 } from 'react-native-paper';
-import {
-    DrawerContentScrollView,
-    DrawerItem
-} from '@react-navigation/drawer';
-
+import {DrawerContentScrollView, DrawerItem , DrawerItemList} from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import{ AuthContext } from '../../components/context';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import{ AuthContext } from '../components/context';
-
-export function DrawerContent(props, foundUser) {
-
-    const paperTheme = useTheme();
-    
-    const PerfilUser = {...props}
-    
-    console.log("PerfilUser", PerfilUser)
-
+export function DrawerContent(props) {
     const { signOut, toggleTheme } = React.useContext(AuthContext);
-
-    //console.log("DrawerContent", props)
-    //console.log("foundUser", foundUser)
-    console.log("thisDrawerContent", this )
-
+    const paperTheme = useTheme();
+    const { Data } = props
+    const perfil = Data.resultProfileCvt
 
     return(
         <View style={{flex:1}}>
             <DrawerContentScrollView {...props}>
-                <View style={styles.drawerContent}>
-                    <View style={styles.userInfoSection}>
-                        <View style={{flexDirection:'row',marginTop: 15}}>
-                            <Avatar.Image 
-                                source={{
-                                    uri: 'https://api.adorable.io/avatars/50/abott@adorable.png'
-                                }}
-                                size={50}
-                            />
-                            <View style={{marginLeft:15, flexDirection:'column'}}>
-                                <Title style={styles.title}>{}</Title>
-                                <Caption style={styles.caption}>Josep Maria Sola</Caption>
+                <View style={styles.drawerContent}>                
+                    <TouchableOpacity  onPress={() => {props.navigation.navigate('ProfileScreen')}} >
+                        <View style={styles.userInfoSection}>
+                            <View style={{flexDirection:'row',marginTop: 15}}>
+                                <Avatar.Image 
+                                    source={{
+                                        uri: 'https://api.adorable.io/avatars/50/abott@adorable.png'
+                                    }}
+                                    size={50}
+
+                                />
+                                <View style={{marginLeft:15, flexDirection:'column'}}>
+                                    <Title style={styles.title}>{}</Title>
+                                    <Caption style={styles.caption}>{Data !== null ? (perfil.firstname + " " + perfil.realname)  : "Nombre Vacio" }</Caption>
+                                </View>
+                            </View>
+
+                            <View style={styles.row}>
+                                <View style={styles.section}>
+                                        {/*<Paragraph style={[styles.paragraph, styles.caption]}>80</Paragraph>   */}
+                                        <Caption style={styles.caption}> </Caption>
+                                </View>
+                                
                             </View>
                         </View>
+                    </TouchableOpacity>
 
-                        <View style={styles.row}>
-                            <View style={styles.section}>
-                                    {/*<Paragraph style={[styles.paragraph, styles.caption]}>80</Paragraph>   */}
-                                    <Caption style={styles.caption}>solamj@vallesoriental.cat</Caption>
-                            </View>
-                            
-                        </View>
-                    </View>
-
-                    <Drawer.Section style={styles.drawerSection}>
+                    <Drawer.Section style={styles.drawerSection} >
                         <DrawerItem 
                             icon={({color, size}) => (
                                 <Icon 
@@ -72,7 +62,18 @@ export function DrawerContent(props, foundUser) {
                                 />
                             )}
                             label="Principal"
-                            onPress={() => {props.navigation.navigate('Home')}}
+                            onPress={() => {props.navigation.navigate('HomeScreen' )}}
+                        />
+                        <DrawerItem 
+                            icon={({color, size}) => (
+                                <Icon 
+                                name="bell-outline" 
+                                color={color}
+                                size={size}
+                                />
+                            )}
+                            label="Tickets"
+                            onPress={() => {props.navigation.navigate('TicketsScreen')}}
                         />
                         <DrawerItem 
                             icon={({color, size}) => (
@@ -83,41 +84,9 @@ export function DrawerContent(props, foundUser) {
                                 />
                             )}
                             label="Perfil"
-                            onPress={() => {props.navigation.navigate('Profile')}}
+                            onPress={() => {props.navigation.navigate('ProfileScreen')}}
                         />
-                        <DrawerItem 
-                            icon={({color, size}) => (
-                                <Icon 
-                                name="view-list" 
-                                color={color}
-                                size={size}
-                                />
-                            )}
-                            label="Lista"
-                            onPress={() => {props.navigation.navigate('BookmarkScreen')}}
-                        />
-                        <DrawerItem 
-                            icon={({color, size}) => (
-                                <Icon 
-                                name="settings-outline" 
-                                color={color}
-                                size={size}
-                                />
-                            )}
-                            label="Configuración"
-                            onPress={() => {props.navigation.navigate('SettingsScreen')}}
-                        />
-                      {/*   <DrawerItem 
-                            icon={({color, size}) => (
-                                <Icon 
-                                name="account-check-outline" 
-                                color={color}
-                                size={size}
-                                />
-                            )}
-                            label="Soporte"
-                            onPress={() => {props.navigation.navigate('SupportScreen')}}
-                        /> */}
+                   
                     </Drawer.Section>
                     <Drawer.Section title="Preferences">
                         <TouchableRipple onPress={() => {toggleTheme()}}>
@@ -147,6 +116,7 @@ export function DrawerContent(props, foundUser) {
         </View>
     );
 }
+
 
 const styles = StyleSheet.create({
     drawerContent: {
@@ -193,3 +163,5 @@ const styles = StyleSheet.create({
       paddingHorizontal: 16,
     },
   });
+
+
