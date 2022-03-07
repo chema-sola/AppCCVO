@@ -1,10 +1,11 @@
-# React Navigation v5 mix
+Este proyecto consiste en que los usuarios de CCVO puedan entrar al GLPI a traves de la APP.
 
-This project is part of YouTube tutorial series on React Navigation 5. Here I have used every navigator option available and combine them in a single project to create a seemless user navigation experience for the app user.
+Esta APP se trata de tener el maximo funcionalidades de GLPI , para facilitar a los usuarios que puedan trabajar via APP 
 
-Then I have created some extra things such as login, signup & splash screen and provided an authentication flow using AsycStorage. Also I have created form validation for the login screen.
+Esta APP esta copiada de una plantilla
 
-Here you can find complete tutorial series and each video link.
+Para seguir algunas guias, recopilo información en los siguiente URL:
+
 
 # YouTube Video List
 - [Complete React Navigation v5 Playlist](https://www.youtube.com/playlist?list=PLQWFhX-gwJbmmqcP-9zMXBaxQbGKfIJY2)
@@ -16,10 +17,3 @@ Here you can find complete tutorial series and each video link.
 - [Drawer Navigator Tutorial](https://youtu.be/2Tj9y8lfiyo)
 - [Stack Navigator Tutorial](https://youtu.be/a9jSyZXYGn8)
 
-
-# Project Demo
-![React Navigation v5 Mix App iPhone Demo](https://raw.githubusercontent.com/itzpradip/react-navigation-v5-mix/master/app-interaction-demo-iphone.gif)
-### iPhone Demo
-
-![React Navigation v5 Mix App Android Demo](https://raw.githubusercontent.com/itzpradip/react-navigation-v5-mix/master/app-interaction-demo-android.gif)
-### Android Demo
