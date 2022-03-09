@@ -17,8 +17,8 @@ const ProfileScreen = (route, navigation , test,  data, props) => {
   const [isLoading, setLoading] = React.useState(true);
 
 
-  const tokenUser = Data.propsData.session_token
-  const perfil = Data.propsData.resultProfileCvt
+  const tokenUser = Data.initialLoginState.propsData.session_token
+  const perfil = Data.initialLoginState.propsData.resultProfileCvt
   
   console.log("DATA", Data)
 
@@ -28,7 +28,7 @@ const ProfileScreen = (route, navigation , test,  data, props) => {
   //http://cau.vallesoriental.cat/apirest.php/User/1310/Useremail?expand_dropdowns=true
 
   const getEmail =  async () => {
-    await fetch(API_URL+'/User/'+Data.propsData.resultProfileCvt.id+'/Useremail?expand_dropdowns=true', {
+    await fetch(API_URL+'/User/'+Data.initialLoginState.propsData.resultProfileCvt.id+'/Useremail?expand_dropdowns=true', {
        method: 'GET',
        headers: {
          'Session-Token' :   tokenUser,

@@ -13,6 +13,8 @@ const Stack = createStackNavigator();
 
 const MyDrawer = ({navigation, ...props}) => {
   const { Data } = props
+  console.log("DATADrawer", Data)
+
   return (
     <Drawer.Navigator drawerContent={(props) => <DrawerContent {...props} Data={Data} />}>
       <Drawer.Screen name="HomeScreen" component={HomeStackNavigator}  />
@@ -22,12 +24,15 @@ const MyDrawer = ({navigation, ...props}) => {
     </Drawer.Navigator>
   );
 };
-const HomeStackNavigator = ({navigation, ...props}) => {
+
+
+
+const HomeStackNavigator = ({navigation}) => {
   return (
-  <Stack.Navigator initialRouteName="HomeScreen"  activeColor="#fff"  >
+  <Stack.Navigator initialRouteName="HomeScreen"  activeColor="#fff"   >
         <Stack.Screen  
         name="HomeScreen" 
-          // component={HomeScreen}         
+        //component={HomeScreen}         
         options={{
           headerStyle: {
             backgroundColor: '#009387',
@@ -42,15 +47,16 @@ const HomeStackNavigator = ({navigation, ...props}) => {
           )
         }}
       >
-        {props => <HomeScreen {...props}  />}
-      </Stack.Screen>
+         {props => <HomeScreen {...props}  />}
+       </Stack.Screen>
   </Stack.Navigator> 
   )
 }
 
+
 const TicketStackNavigator = ({navigation}) => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="TicketsScreen" activeColor="#fff" >
       <Stack.Screen  
         name="TicketsScreen" 
         component={TicketsScreen} 
@@ -67,10 +73,14 @@ const TicketStackNavigator = ({navigation}) => {
             <Icon.Button name="ios-menu" size={25} backgroundColor="#009387" onPress={() => navigation.openDrawer()}></Icon.Button>
           )
         }} 
-      />
+      >
+       
+      </Stack.Screen>
     </Stack.Navigator> 
   )
 }
+
+
 
 const DetallTicketStackScreen = ({navigation}) => {
   return (
@@ -92,6 +102,7 @@ const DetallTicketStackScreen = ({navigation}) => {
           )
         }} 
       />
+
     </Stack.Navigator> 
   )
 }

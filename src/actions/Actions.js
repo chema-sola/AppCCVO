@@ -1,15 +1,13 @@
 import { API_URL } from '../config/const';
 import { Alert } from 'react-native';
 
+
 export const getConexion =  async(credentials) => {
-  console.log("Devolver la conexion Action", credentials)
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       fetch(API_URL+'/initSession', {
         method: 'GET',
         headers: {
-/*             'Accept' : 'application/json',
-            'Content-Type' : 'application/json', */
             'Authorization' :  'Basic ' + credentials
         },
         cors: true   
@@ -38,9 +36,8 @@ export const getConexion =  async(credentials) => {
                             profileData, 
                             resultProfile, 
                             resultProfileCvt, 
-                        }                        
-                      resolve(DataUser);
-
+                        }  
+                        resolve(DataUser);
                     }catch (error) {
                       Alert.alert('Error Conexión!', 'Error al cargar el perfil.', [
                       {text: 'Ok'}

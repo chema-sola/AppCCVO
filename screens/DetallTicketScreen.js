@@ -13,7 +13,7 @@ const DetallTicketScreen = ({navigation, ...props}) => {
   const {Data} = React.useContext(AuthContext);
   const [isLoading, setLoading] = React.useState(true);
   const [data, setData] = React.useState([]);
-  const tokenUser = Data.propsData.session_token
+  const tokenUser = Data.initialLoginState.propsData.session_token
   const get = props.route.params.props
   const { width } = useWindowDimensions();
   const [isOnline, setIsOnline] = React.useState(null);

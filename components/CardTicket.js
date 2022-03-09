@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useEffect} from "react";
 import { View,  StyleSheet, StatusBar } from 'react-native';
  import {
    Text,
@@ -8,12 +8,26 @@ import { View,  StyleSheet, StatusBar } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useTheme } from '@react-navigation/native';
 import { AuthContext } from './context';
+import { API_URL } from '../src/config/const';
+import { useIsFocused } from "@react-navigation/native";
 
 
-const CardTicket = ({ route, token, navigation, data, ...props}) => {
-  const theme = useTheme();
-  const valor = React.useContext(AuthContext);
+
+const CardTicket = ({ route, token, navigation, ...props}) => {
+  const {Data} = React.useContext(AuthContext);
+  const isFocused = useIsFocused();
+  const [isEmail, setEmail] = React.useState(null);
   
+
+  const theme = useTheme();
+  const tokenUser = Data.initialLoginState.propsData.session_token
+
+  useEffect(() => {
+    if(isFocused){ 
+      getEmail();
+  }
+}, [isFocused]);  
+
   const statusinfo = () => {
     if(props.getStatus == 0){
     }
@@ -37,7 +51,29 @@ const CardTicket = ({ route, token, navigation, data, ...props}) => {
         <Badge value="Cerrado" status="black" />
       )
     }
-    
+  }
+
+
+  const getEmail =  () => {
+    if(props.getApplicant == 0) { 
+      let A =  fetch(API_URL+'/ticket/'+props.getID+'/ticket_user?expand_dropdowns=true', {
+        method: 'GET',
+        headers: {
+          'Session-Token' :   tokenUser,
+          'html' : true, 
+        }
+      }).then((res) => res.json())
+        .then(async res => {
+          console.log("RES", res)
+           let at = res[0].alternative_email
+           setEmail(at)
+        })
+      }
+    if( props.getApplicant !== 0) {
+      setEmail(props.getApplicant)
+    }
+    return " "
+
   }
     return (
         <View style={styles.container}>
@@ -57,7 +93,7 @@ const CardTicket = ({ route, token, navigation, data, ...props}) => {
                 backgroundColor="#009387" 
                 onPress={() => navigation.navigate('DetallTicketScreen', { 
                   screen: 'DetallTicketScreen',
-                  params: {props }, 
+                  params: {props}, 
                 })}>
               </Icon.Button>
               </View>
@@ -79,8 +115,7 @@ const CardTicket = ({ route, token, navigation, data, ...props}) => {
 
             <View style={styles.barBottom}>
               <View style={styles.applicant}> 
-                {/* <Text> {getDataUser()}  </Text> */}
-              <Text> {props.getApplicant}  </Text>
+             <Text> {isEmail}  </Text>
 
               </View>
               <View style={styles.assigned}>            

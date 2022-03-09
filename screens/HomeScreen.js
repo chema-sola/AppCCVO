@@ -1,16 +1,23 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { View,  StyleSheet, StatusBar } from 'react-native';
 import { Drawer } from 'react-native-paper';
 import { useTheme } from '@react-navigation/native';
 import { AuthContext } from '../components/context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const HomeScreen = ({navigation, route, test, Data,  props}) => {
-  const valor = React.useContext(AuthContext);
+const HomeScreen = ({navigation, route, test, Data}) => {
+  const Valor = React.useContext(AuthContext);
   const { colors } = useTheme();
   const theme = useTheme();
 
+  useEffect(() => {
+    goTicket()
+  }); 
   
+  const goTicket = () => {
+    navigation.navigate('TicketsScreen')
+  }
+
   if(theme.dark == false){
     styles.button = {
       paddingHorizontal: 5,

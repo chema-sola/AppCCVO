@@ -105,6 +105,9 @@ const App = () => {
     signIn: async(DataUser) => { 
       initialLoginState.propsData = DataUser
       const userToken = String(DataUser.session_token);
+
+      console.log("PASA por aqui?", initialLoginState)
+
       setUserToken(userToken);
       setpropsData(DataUser);
       setIsLoading(true);
@@ -131,9 +134,10 @@ const App = () => {
         console.log(e)
       } 
     },    
-    Data: {propsData} 
-  }), [isDarkTheme]);
-  
+    Data: {initialLoginState}
+       
+  }), [isDarkTheme]);  
+
   const DataStorage = async() => {
     try{
       AsyncStorage.getItem('isDarkTheme', (err, value) => {
