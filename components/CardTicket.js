@@ -12,13 +12,10 @@ import { API_URL } from '../src/config/const';
 import { useIsFocused } from "@react-navigation/native";
 
 
-
 const CardTicket = ({ route, token, navigation, ...props}) => {
   const {Data} = React.useContext(AuthContext);
   const isFocused = useIsFocused();
   const [isEmail, setEmail] = React.useState(null);
-  
-
   const theme = useTheme();
   const tokenUser = Data.initialLoginState.propsData.session_token
 
@@ -53,7 +50,6 @@ const CardTicket = ({ route, token, navigation, ...props}) => {
     }
   }
 
-
   const getEmail =  () => {
     if(props.getApplicant == 0) { 
       let A =  fetch(API_URL+'/ticket/'+props.getID+'/ticket_user?expand_dropdowns=true', {
@@ -64,7 +60,6 @@ const CardTicket = ({ route, token, navigation, ...props}) => {
         }
       }).then((res) => res.json())
         .then(async res => {
-          console.log("RES", res)
            let at = res[0].alternative_email
            setEmail(at)
         })
@@ -122,10 +117,7 @@ const CardTicket = ({ route, token, navigation, ...props}) => {
                 <Text> {props.getAssigned} </Text>
               </View>
             </View>
-
-          </View> 
-
-       
+        </View>       
       </View>
     );
 };

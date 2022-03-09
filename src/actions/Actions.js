@@ -1,7 +1,6 @@
 import { API_URL } from '../config/const';
 import { Alert } from 'react-native';
 
-
 export const getConexion =  async(credentials) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -11,44 +10,43 @@ export const getConexion =  async(credentials) => {
             'Authorization' :  'Basic ' + credentials
         },
         cors: true   
-          }).then((response) => response.json())
-            .then (async data => {
-                if ( typeof data === 'object' && typeof data.session_token === 'string'){
-                    try{
-                        let {session_token} = data;    
-                        let objHeader = {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json',
-                            'session_token': session_token,
-                          };
-                          let result = await fetch(API_URL + '/getFullSession/?session_token=' + session_token, {
-                            headers: objHeader
-                          });
-                          let profileData = await result.json();
-                          let resultProfile = await fetch(API_URL + '/User/'+profileData.session.glpiID+'?session_token=' + session_token, {
-                            headers: objHeader
-                          });
-
-                          let resultProfileCvt = await resultProfile.json();
-                          
-                          const DataUser = {
-                            session_token, 
-                            profileData, 
-                            resultProfile, 
-                            resultProfileCvt, 
-                        }  
-                        resolve(DataUser);
-                    }catch (error) {
-                      Alert.alert('Error Conexión!', 'Error al cargar el perfil.', [
-                      {text: 'Ok'}
-                  ]);
-                  throw (error);              
-                } 
-              }
-            }).catch( error => {
-                console.log(error);         
-            }) 
-          }, 2000);    
+      }).then((response) => response.json())
+        .then (async data => {
+            if ( typeof data === 'object' && typeof data.session_token === 'string'){
+                try{
+                    let {session_token} = data;    
+                    let objHeader = {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'session_token': session_token,
+                      };
+                      let result = await fetch(API_URL + '/getFullSession/?session_token=' + session_token, {
+                        headers: objHeader
+                      });
+                      let profileData = await result.json();
+                      let resultProfile = await fetch(API_URL + '/User/'+profileData.session.glpiID+'?session_token=' + session_token, {
+                        headers: objHeader
+                      });
+                      let resultProfileCvt = await resultProfile.json();
+                      
+                      const DataUser = {
+                        session_token, 
+                        profileData, 
+                        resultProfile, 
+                        resultProfileCvt, 
+                    }  
+                    resolve(DataUser);
+                }catch (error) {
+                  Alert.alert('Error Conexión!', 'Error al cargar el perfil.', [
+                  {text: 'Ok'}
+              ]);
+              throw (error);              
+            } 
+          }
+        }).catch( error => {
+            console.log(error);         
+        }) 
+    },2000);    
   });         
 }      
 

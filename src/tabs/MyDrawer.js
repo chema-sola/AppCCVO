@@ -13,7 +13,6 @@ const Stack = createStackNavigator();
 
 const MyDrawer = ({navigation, ...props}) => {
   const { Data } = props
-  console.log("DATADrawer", Data)
 
   return (
     <Drawer.Navigator drawerContent={(props) => <DrawerContent {...props} Data={Data} />}>
@@ -24,8 +23,6 @@ const MyDrawer = ({navigation, ...props}) => {
     </Drawer.Navigator>
   );
 };
-
-
 
 const HomeStackNavigator = ({navigation}) => {
   return (
@@ -73,8 +70,7 @@ const TicketStackNavigator = ({navigation}) => {
             <Icon.Button name="ios-menu" size={25} backgroundColor="#009387" onPress={() => navigation.openDrawer()}></Icon.Button>
           )
         }} 
-      >
-       
+      >      
       </Stack.Screen>
     </Stack.Navigator> 
   )
@@ -102,7 +98,6 @@ const DetallTicketStackScreen = ({navigation}) => {
           )
         }} 
       />
-
     </Stack.Navigator> 
   )
 }

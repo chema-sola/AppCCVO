@@ -28,9 +28,6 @@ import { useDispatch } from 'react-redux';
 import {getConexion} from './src/actions/Actions';
 import MyDrawer from './src/tabs/MyDrawer';
 
-const Stack = createStackNavigator();
-const Drawer = createDrawerNavigator();
-
 const App = () => {
   const [isLoading, setIsLoading] = React.useState(true);
   const [userToken, setUserToken] = React.useState(null);
@@ -105,9 +102,6 @@ const App = () => {
     signIn: async(DataUser) => { 
       initialLoginState.propsData = DataUser
       const userToken = String(DataUser.session_token);
-
-      console.log("PASA por aqui?", initialLoginState)
-
       setUserToken(userToken);
       setpropsData(DataUser);
       setIsLoading(true);

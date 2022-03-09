@@ -5,7 +5,6 @@ import {
     Avatar,
     Title,
     Caption,
-    Paragraph,
     Drawer,
     Text,
     TouchableRipple,
@@ -34,7 +33,6 @@ export function DrawerContent(props) {
                                         uri: 'https://api.adorable.io/avatars/50/abott@adorable.png'
                                     }}
                                     size={50}
-
                                 />
                                 <View style={{marginLeft:15, flexDirection:'column'}}>
                                     <Title style={styles.title}>{}</Title>
@@ -44,7 +42,6 @@ export function DrawerContent(props) {
 
                             <View style={styles.row}>
                                 <View style={styles.section}>
-                                        {/*<Paragraph style={[styles.paragraph, styles.caption]}>80</Paragraph>   */}
                                         <Caption style={styles.caption}> </Caption>
                                 </View>
                                 

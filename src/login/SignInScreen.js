@@ -51,7 +51,7 @@ const SignInScreen = ({navigation}) => {
     const { colors } = useTheme();
 
     const textInputChange = (val) => {
-        if( val.trim().length >= 4 ) {
+        if( val.trim().length >= 3 ) {
             setData({
                 ...data,
                 username: val,
@@ -69,7 +69,7 @@ const SignInScreen = ({navigation}) => {
     }
 
     const handlePasswordChange = (val) => {
-        if( val.trim().length >= 8 ) {
+        if( val.trim().length >= 3 ) {
             setData({
                 ...data,
                 password: val,
@@ -165,11 +165,11 @@ const SignInScreen = ({navigation}) => {
                 </Animatable.View>
                 : null}
             </View>
-            { data.isValidUser ? null : 
+            {/* { data.isValidUser ? null : 
             <Animatable.View animation="fadeInLeft" duration={500}>
             <Text style={styles.errorMsg}>El nombre de usuario es Incorrecto.</Text>
-            </Animatable.View>
-            }
+            </Animatable.View> 
+            }*/}
             
 
             <Text style={[styles.text_footer, {
@@ -210,11 +210,11 @@ const SignInScreen = ({navigation}) => {
                     }
                 </TouchableOpacity>
             </View>
-            { data.isValidPassword ? null : 
+            {/* { data.isValidPassword ? null : 
             <Animatable.View animation="fadeInLeft" duration={500}>
             <Text style={styles.errorMsg}>Contraseña Incorrecta</Text>
             </Animatable.View>
-            }
+            } */}
 
             {/* =========================================================================== */}
             <View style={styles.action}>

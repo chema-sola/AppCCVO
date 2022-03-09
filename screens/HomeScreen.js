@@ -5,9 +5,8 @@ import { useTheme } from '@react-navigation/native';
 import { AuthContext } from '../components/context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const HomeScreen = ({navigation, route, test, Data}) => {
-  const Valor = React.useContext(AuthContext);
-  const { colors } = useTheme();
+const HomeScreen = ({navigation}) => {
+  //const Data = React.useContext(AuthContext);
   const theme = useTheme();
 
   useEffect(() => {

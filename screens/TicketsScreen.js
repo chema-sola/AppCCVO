@@ -14,15 +14,11 @@ import { useIsFocused } from "@react-navigation/native";
 
 const TicketsScreen = ({route, navigation}) => {
   const {Data} = React.useContext(AuthContext);
-  console.log("AuthContext", React.useContext(AuthContext))
-  console.log("DATATicket?", Data)
-
   const [isFetching, setFetching] = React.useState(false);
   const [data, setData] = React.useState(null);
   const [isLoading, setLoading] = React.useState(true);
   const isFocused = useIsFocused();
   const tokenUser = Data.initialLoginState.propsData.session_token
-  console.log("TOKEN", tokenUser)
 
 
   useEffect(() => {
@@ -64,7 +60,7 @@ const TicketsScreen = ({route, navigation}) => {
     })
   }
 
-  const renderItem = ({ item, index }) => ( 
+  const renderItem = ({ item}) => ( 
     <CardTicket 
       getID={item.Id}      
       getStatus = {item.Status}
@@ -75,7 +71,6 @@ const TicketsScreen = ({route, navigation}) => {
       getApplicant = {item.User}
       navigation  = {navigation}
       route = {route}       
-      // getApplicant ={function12(item)}
       // getAssigned = { element.assigned}      
     />
   );

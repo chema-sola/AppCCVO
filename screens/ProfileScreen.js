@@ -9,23 +9,18 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { AuthContext } from '../components/context';
 import { API_URL } from '../src/config/const';
 
-
-const ProfileScreen = (route, navigation , test,  data, props) => {
+const ProfileScreen = () => {
   const { colors } = useTheme();
   const {Data} = React.useContext(AuthContext);
   const [Email, setEmail] = React.useState([]);
   const [isLoading, setLoading] = React.useState(true);
 
-
   const tokenUser = Data.initialLoginState.propsData.session_token
   const perfil = Data.initialLoginState.propsData.resultProfileCvt
   
-  console.log("DATA", Data)
-
   useEffect(() => {
     getEmail();
   });
-  //http://cau.vallesoriental.cat/apirest.php/User/1310/Useremail?expand_dropdowns=true
 
   const getEmail =  async () => {
     await fetch(API_URL+'/User/'+Data.initialLoginState.propsData.resultProfileCvt.id+'/Useremail?expand_dropdowns=true', {
@@ -39,12 +34,6 @@ const ProfileScreen = (route, navigation , test,  data, props) => {
        .catch((error) => console.error(error))
        .finally(() => setLoading(false));       
    }
-
-  //const { itemId } = route.params;
-  //console.log("ITEMS", itemId)
-  //https://dev.to/bruino/3-utiles-apis-generadoras-de-avatar-p6
-
-
 
     return (    
       <View style={styles.container}>
@@ -110,8 +99,6 @@ const ProfileScreen = (route, navigation , test,  data, props) => {
             </View>
           </ScrollView>  
         </View>
-
-
       </View>
     );
 };

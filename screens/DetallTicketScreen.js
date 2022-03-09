@@ -1,6 +1,6 @@
 import React, {useEffect} from "react";
-import {View, Text,  StyleSheet, FlatList, TouchableOpacity, ScrollView, useWindowDimensions} from "react-native";
-import { ListItem , colors, Badge} from "react-native-elements";
+import {View, Text,  StyleSheet, ScrollView, useWindowDimensions} from "react-native";
+import { Badge} from "react-native-elements";
 import { API_URL } from '../src/config/const';
 import { AuthContext } from '../components/context';
 import HTMLView from 'react-native-htmlview';
