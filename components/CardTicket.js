@@ -97,16 +97,16 @@ const CardTicket = ({ route, token, navigation, ...props}) => {
               <Text numberOfLines={1} style={{fontWeight: "bold"}}> {props.getTitle} </Text>
             </View>
 
-            <View style={styles.barBottom}>
+           
               <View style={styles.fecha}>
-                <Text style={{ fontSize: 12 , fontWeight: 'bold' }}>Date: </Text>
+                <Text style={{ fontSize: 12 , fontWeight: 'bold' }}>Create: </Text>
                 <Text style={styles.textfecha}> {props.getDataEntry} </Text>
               </View>
 
               <View style={styles.entity}>
                 <Text> {props.getEntity} </Text>
               </View>
-              </View>
+              
 
             <View style={styles.barBottom}>
               <View style={styles.applicant}> 
@@ -146,8 +146,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', 
     paddingLeft: 10,
     alignItems: 'center', 
-    justifyContent: 'center', 
-    width: '15%',
+    width: '25%',
   },
   infoStatus: {
     justifyContent: 'center', 
@@ -160,8 +159,6 @@ const styles = StyleSheet.create({
   title: {
     paddingLeft: 10,
     paddingBottom: 5,
-
-
   },
   barBottom: {
     flexDirection: 'row', 
@@ -170,24 +167,29 @@ const styles = StyleSheet.create({
     flexDirection: 'column', 
   },
   fecha: {
-    justifyContent: 'center', 
+    paddingLeft: 13,
     paddingBottom: 5,
-    paddingLeft: 10,
     alignItems: 'center', 
     flexDirection: 'row', 
-    width: '50%',
+    width: '90%',
   },
   textfecha: {
 
   },
   entity: {
-    width: '50%',
+    paddingLeft: 10,
+    width: '90%',
+    flexDirection: 'row', 
+    paddingBottom: 5,
+
+
+
   },
   applicant: {
     paddingLeft: 10,
     paddingBottom: 5,
     flexDirection: 'row', 
-    width: '70%',
+    width: '90%',
   },
   assigned: {
     flexDirection: 'row', 

@@ -19,6 +19,9 @@ const DetallTicketScreen = ({navigation, ...props}) => {
   const [isOnline, setIsOnline] = React.useState(null);
   const isFocused = useIsFocused();
 
+
+
+
   useEffect(() => {
       if(isFocused){ 
         getInitialData();
@@ -63,7 +66,7 @@ const DetallTicketScreen = ({navigation, ...props}) => {
             setData(dataTicket)
            }
        })
-       .catch((error) => console.error(error))
+       .catch((error) => console.error("ERRORERERER", error))
        .finally(() => setLoading(false));       
    }
   const statusinfo = () => {
@@ -167,8 +170,5 @@ const html =  deco
       width: '60%'
     },
   });
-
-
-
 
 export default DetallTicketScreen;

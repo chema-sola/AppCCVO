@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator , YellowBox } from 'react-native';
 import { 
   NavigationContainer, 
   DefaultTheme as NavigationDefaultTheme,
@@ -27,6 +27,9 @@ import { useDispatch } from 'react-redux';
 
 import {getConexion} from './src/actions/Actions';
 import MyDrawer from './src/tabs/MyDrawer';
+
+YellowBox.ignoreWarnings(['Warning: isMounted(...) is deprecated', 'Module RCTImageLoader', 'RNDeviceInfo', 'Warning:', 'Warning: An update', 'Failed to get size for image:']);
+
 
 const App = () => {
   const [isLoading, setIsLoading] = React.useState(true);
